@@ -20,7 +20,7 @@ class Card(models.Model):
     expired = models.DateTimeField()
     cvv = models.CharField(max_length=3, validators=[check_for_invalid_characters])
     balance = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=13, default='not_activated', choices=STRING_STATUS_CHOICES)
+    status = models.CharField(max_length=13, choices=STRING_STATUS_CHOICES, blank=True)
 
 
 class Transaction(models.Model):
