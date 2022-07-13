@@ -9,6 +9,7 @@ class CardList(FormMixin, ListView):
     model = Card
     template_name = 'card_list.html'
     form_class = SearchCardForm
+    paginate_by = 10
 
     def get_queryset(self, *args, **kwargs):
         return Card.objects.all()

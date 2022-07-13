@@ -42,7 +42,9 @@
             <button type="submit" class="btn btn-primary mt-1" id="search">Apply filters</button>
             </form>
         </div>
-
+    {% if page_obj.has_other_pages %}
+            {% include "base/paginator.html" with items=page_obj  %}
+    {% endif %}
 
     </div>
 {% endblock %}
