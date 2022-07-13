@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    {% csrf_token %}
+    <div class="row justify-content-between">
+        <div class="col">
+            <h2>Cards</h2>
+        </div>
+        <div class="col">
+            <a href="" type="button" class="btn btn-success float-end">Add new cards</a>
+        </div>
+    </div>
+    <div class="row">
+            <div class="col-8">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">Series</th>
+                    <th scope="col">Number</th>
+                    <th scope="col">Issue date</th>
+                    <th scope="col">Expire date</th>
+                    <th scope="col">Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for object in object_list %}
+                    <tr>
+                        <th>{{ object.BIN }}</th>
+                        <td><a href="">{{ object.number }}</a></td>
+                        <td>{{ object.issue_date }}</td>
+                        <td>{{ object.expired }}</td>
+                        <td>{{ object.status }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        <div class="col-4">
+            <form action="{% url "card_search" %}" method='GET'>
+            {{form}}
+            <button type="submit" class="btn btn-primary mt-1" id="search">Apply filters</button>
+            </form>
+        </div>
+
+
+    </div>
+{% endblock %}
