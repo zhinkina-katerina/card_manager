@@ -1,4 +1,4 @@
-from django.forms import ModelForm, widgets
+from django.forms import ModelForm, widgets, TextInput
 
 from .models import Card
 
@@ -39,4 +39,7 @@ class SearchCardForm(ModelForm):
                 attrs={
                     'class': 'form-select',
                 })
+        }
+        labels = {
+            'BIN': 'BIN (series): first 6 digits of the card number'
         }

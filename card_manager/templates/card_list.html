@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block content %}
-    {% csrf_token %}
     <div class="row justify-content-between">
         <div class="col">
             <h2>Cards</h2>
@@ -16,7 +15,6 @@
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th scope="col">Series</th>
                     <th scope="col">Number</th>
                     <th scope="col">Issue date</th>
                     <th scope="col">Expire date</th>
@@ -26,8 +24,7 @@
                 <tbody>
                     {% for object in object_list %}
                     <tr>
-                        <th>{{ object.BIN }}</th>
-                        <td><a href="">{{ object.number }}</a></td>
+                        <td><a href="{% url 'card_detail' pk=object.id %}">{{ object.BIN }}{{ object.number }}</a></td>
                         <td>{{ object.issue_date }}</td>
                         <td>{{ object.expired }}</td>
                         <td>{{ object.status }}</td>
@@ -42,9 +39,11 @@
             <button type="submit" class="btn btn-primary mt-1" id="search">Apply filters</button>
             </form>
         </div>
+    <div class="col-8">
     {% if page_obj.has_other_pages %}
             {% include "base/paginator.html" with items=page_obj  %}
     {% endif %}
+    </div>
 
     </div>
 {% endblock %}
