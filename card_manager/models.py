@@ -15,7 +15,7 @@ class Card(models.Model):
     )
 
     BIN = models.CharField(max_length=6, validators=[check_for_invalid_characters])  # Bank Identification Number
-    number = models.CharField(max_length=8, validators=[check_for_invalid_characters])
+    number = models.CharField(max_length=10, validators=[check_for_invalid_characters])
     issue_date = models.DateTimeField()
     expired = models.DateTimeField()
     cvv = models.CharField(max_length=3, validators=[check_for_invalid_characters])
@@ -34,3 +34,5 @@ class Transaction(models.Model):
     recipient = models.CharField(max_length=100)
     status = models.CharField(max_length=10, choices=STRING_STATUS_CHOICES)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    date_created = models.DateTimeField(auto_now=True)
+
