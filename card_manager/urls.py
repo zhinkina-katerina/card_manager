@@ -7,5 +7,6 @@ urlpatterns = [
     path('search/', views.CardSearch.as_view(), name='card_search'),
     path('card/<int:pk>/', views.CardDetail.as_view(), name='card_detail'),
     path('delete_card/<int:pk>/', views.DeleteCardView.as_view(), name='card_delete'),
+    path('change_status/<int:pk>/', views.ChangeStatusCardView.as_view(), name='change_status'),
 ]
 

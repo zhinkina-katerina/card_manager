@@ -1,6 +1,7 @@
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, DeleteView
+from django.views.generic import ListView, DetailView, DeleteView, View
 from django.views.generic.edit import FormMixin
 
 from .forms import SearchCardForm
@@ -14,7 +15,7 @@ class CardList(FormMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self, *args, **kwargs):
-        return Card.objects.all()
+        return Card.objects.all().order_by("issue_date", "id")
 
 
 class CardSearch(CardList):
@@ -62,3 +63,14 @@ class DeleteCardView(DeleteView):
         obj.delete()
         return JsonResponse({'url': reverse_lazy('card_list')})
 
+
+class ChangeStatusCardView(View):
+
+    def post(self, request, *args, **kwargs):
+        card = get_object_or_404(Card, pk=self.kwargs['pk'])
+        if card.status == 'activated':
+            card.status = 'not_activated'
+        elif card.status == 'not_activated' or card.status == 'expired':
+            card.status = 'activated'
+        card.save()
+        return JsonResponse({'url': reverse_lazy('card_detail', kwargs={'pk': self.kwargs['pk']})})

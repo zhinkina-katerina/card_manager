@@ -12,8 +12,15 @@
         </div>
         <div class="col">
             <div class="float-end">
-            <a href="" type="button" class="btn btn-danger mx-1 ">Activate Card</a>
-            <a href="{% url 'card_delete' pk=card.id %}" class="btn btn-danger mx-1" id="delete_card_button">Delete Card</a>
+            <a href="{% url 'change_status' pk=card.id %}" id="change_status_button"
+
+                {% if card.status == 'activated' %}
+                class="btn btn-danger mx-1">Deactivate Card</a>
+                {% else %}
+                class="btn btn-success mx-1">Activate Card</a>
+                {% endif %}
+
+                <a href="{% url 'card_delete' pk=card.id %}" class="btn btn-danger mx-1" id="delete_card_button">Delete Card</a>
             </div>
         </div>
     </div>
@@ -99,6 +106,8 @@
             </tbody>
         </table>
     </div>
+
     {% endwith %}
     <script src="{% static 'js/cards_manager/delete_card.js' %}"></script>
+    <script src="{% static 'js/cards_manager/change_status_card.js' %}"></script>
 {% endblock %}
