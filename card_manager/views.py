@@ -1,13 +1,14 @@
-from django.views.generic import ListView
+from django.db.models import Prefetch
+from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormMixin
 
 from .forms import SearchCardForm
-from .models import Card
+from .models import Card, Transaction
 
 
 class CardList(FormMixin, ListView):
     model = Card
-    template_name = 'card_list.html'
+    template_name = 'card_list.html'  # noqa
     form_class = SearchCardForm
     paginate_by = 10
 
@@ -30,3 +31,14 @@ class CardSearch(CardList):
 
     def get_initial(self):
         return self.request.GET.dict()
+
+
+class CardDetail(DetailView):
+    model = Card
+    template_name = 'card_details.html'  # noqa
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(id=self.kwargs['pk']).prefetch_related(
+            Prefetch('transaction_set', queryset=Transaction.objects.order_by('date_created'),
+                     to_attr='transaction_order_by_date')).all()
