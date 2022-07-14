@@ -3,6 +3,7 @@
 {% load format_card_number %}
 
 {% block content %}
+    {% with object.0 as card %}
     <div class="row justify-content-between">
         <div class="col">
             <h2>Card details</h2>
@@ -81,15 +82,16 @@
                 </tr>
             </thead>
             <tbody>
-            {% for item in card.transaction_order_by_date %}
+            {% for transaction in object %}
                 <tr>
-                    <td>{{ item.date_created }}</td>
-                    <td>{{ item.amount }}</td>
-                    <td>{{ item.recipient }}</td>
-                    <td>{{ item.status }}</td>
+                    <td>{{ transaction.date_created }}</td>
+                    <td>{{ transaction.amount }}</td>
+                    <td>{{ transaction.recipient }}</td>
+                    <td>{{ transaction.transaction_status }}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
+    {% endwith %}
 {% endblock %}

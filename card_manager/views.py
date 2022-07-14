@@ -1,9 +1,8 @@
-from django.db.models import Prefetch
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormMixin
 
 from .forms import SearchCardForm
-from .models import Card, Transaction
+from .models import Card
 
 
 class CardList(FormMixin, ListView):
@@ -37,8 +36,17 @@ class CardDetail(DetailView):
     model = Card
     template_name = 'card_details.html'  # noqa
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(id=self.kwargs['pk']).prefetch_related(
-            Prefetch('transaction_set', queryset=Transaction.objects.order_by('date_created'),
-                     to_attr='transaction_order_by_date')).all()
+    def get_object(self):
+        return Card.objects.raw(
+            '''SELECT card_manager_card.*, 
+            card_manager_transaction.amount,
+            card_manager_transaction.recipient, 
+            card_manager_transaction.status as transaction_status,
+            card_manager_transaction.date_created
+            FROM card_manager_card
+            LEFT JOIN card_manager_transaction 
+            ON card_manager_transaction.card_id = card_manager_card.id
+            WHERE card_manager_card.id = 1
+            ORDER BY card_manager_transaction.date_created''',
+            [self.kwargs['pk']]
+        )
