@@ -1,0 +1,22 @@
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th scope="col">Time</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Recipient</th>
+            <th scope="col">Status</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for transaction in transactions %}
+        {% if transaction.date_created %}
+        <tr>
+            <td>{{ transaction.date_created }}</td>
+            <td>{{ transaction.amount }}</td>
+            <td>{{ transaction.recipient }}</td>
+            <td>{{ transaction.transaction_status }}</td>
+        </tr>
+        {% endif %}
+    {% endfor %}
+    </tbody>
+</table>

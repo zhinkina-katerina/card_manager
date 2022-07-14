@@ -6,9 +6,6 @@
         <div class="col">
             <h2>Cards</h2>
         </div>
-        <div class="col">
-            <a href="" type="button" class="btn btn-success float-end">Add new cards</a>
-        </div>
     </div>
     <div class="row">
             <div class="col-8">
@@ -41,7 +38,7 @@
         </div>
     <div class="col-8">
     {% if page_obj.has_other_pages %}
-            {% include "base/paginator.html" with items=page_obj  %}
+        {% include "base/paginator.html" with items=page_obj  %}
     {% endif %}
     </div>
 
