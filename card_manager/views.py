@@ -1,8 +1,9 @@
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, DeleteView
 from django.views.generic.edit import FormMixin
+from django.shortcuts import redirect, get_object_or_404
 
 from .forms import SearchCardForm
-from .models import Card
+from .models import Card, Transaction
 
 
 class CardList(FormMixin, ListView):
@@ -24,7 +25,6 @@ class CardSearch(CardList):
         if new_query.get('status__icontains'):
             new_query['status'] = new_query['status__icontains']
             del new_query['status__icontains']
-            print(new_query)
 
         return Card.objects.filter(**new_query)
 
@@ -46,7 +46,8 @@ class CardDetail(DetailView):
             FROM card_manager_card
             LEFT JOIN card_manager_transaction 
             ON card_manager_transaction.card_id = card_manager_card.id
-            WHERE card_manager_card.id = 1
+            WHERE card_manager_card.id = %s
             ORDER BY card_manager_transaction.date_created''',
             [self.kwargs['pk']]
         )
+
