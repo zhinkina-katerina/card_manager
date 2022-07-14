@@ -1,6 +1,7 @@
+from django.http import JsonResponse
+from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView
 from django.views.generic.edit import FormMixin
-from django.shortcuts import redirect, get_object_or_404
 
 from .forms import SearchCardForm
 from .models import Card, Transaction
@@ -50,4 +51,14 @@ class CardDetail(DetailView):
             ORDER BY card_manager_transaction.date_created''',
             [self.kwargs['pk']]
         )
+
+
+class DeleteCardView(DeleteView):
+    model = Card
+
+    def delete(self, request, *args, **kwargs):
+        obj = self.get_object()
+        Transaction.objects.filter(card=obj).delete()
+        obj.delete()
+        return JsonResponse({'url': reverse_lazy('card_list')})
 
