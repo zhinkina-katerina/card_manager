@@ -18,7 +18,7 @@ SECRET_KEY = 'django-insecure-+dehfwx%b4%8s9+&u83cedk$e5)a52ee@q!b2(z-yqwfo8yzh4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['card-manager-test-task.herokuapp.com']
 
 
 # Application definition
