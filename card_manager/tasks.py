@@ -1,5 +1,5 @@
 import datetime
-
+from core.celery import app
 from celery import shared_task
 
 from .card_generator import CardGenerator
@@ -13,6 +13,6 @@ def search_for_expired_cards():
         item.save()
 
 
-@shared_task()
-def generate_cards(dict_id):
+@app.task(bind=True)
+def generate_cards(self, dict_id):
     CardGenerator().generate_cards(CardGeneration.objects.get(id=dict_id['id']))
