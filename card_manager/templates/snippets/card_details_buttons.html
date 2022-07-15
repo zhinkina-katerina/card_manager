@@ -1,11 +1,10 @@
 <div class="col">
     <div class="float-end">
-    <a href="{% url 'change_status' pk=card.id %}" id="change_status_button"
 
         {% if card.status == 'activated' %}
-        class="btn btn-danger mx-1">Deactivate Card</a>
+        <a href="{% url 'deactivate_card' pk=card.id %}" id="deactivate_card_button" class="btn btn-danger mx-1">Deactivate Card</a>
         {% else %}
-        class="btn btn-success mx-1">Activate Card for 6 month</a>
+        <a href="{% url 'activate_card' pk=card.id %}" id="activate_card_button" class="btn btn-success mx-1">Activate Card for 6 month</a>
         {% endif %}
 
     <a href="{% url 'card_delete' pk=card.id %}" class="btn btn-danger mx-1" id="delete_card_button">Delete Card</a>

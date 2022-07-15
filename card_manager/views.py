@@ -1,20 +1,22 @@
+import datetime
+
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView, View
 from django.views.generic.edit import FormMixin
-import datetime
 
 from .forms import SearchCardForm, GenerateCardForm
-from .models import Card, Transaction, CardGeneration
+from .models import Card, CardGeneration
 from .tasks import generate_cards
-from .card_generator import CardGenerator as CG
+from .utilits import add_months_to_now
+
 
 class CardList(FormMixin, ListView):
     model = Card
     template_name = 'card_list.html'  # noqa
     form_class = SearchCardForm
-    paginate_by = 10
+    paginate_by = 20
 
     def get_queryset(self, *args, **kwargs):
         return Card.objects.all().order_by("issue_date", "id")
@@ -23,16 +25,22 @@ class CardList(FormMixin, ListView):
 class CardSearch(CardList):
     def get_queryset(self):
         query = self.request.GET.dict()
-        if query.get('page'):
-            del query['page']
-        if query.get('initial-issue_date'):
-            del query['initial-issue_date']
-        new_query = {f'{x}__icontains': y for x, y in query.items() if y != ''}
-        if new_query.get('status__icontains'):
-            new_query['status'] = new_query['status__icontains']
-            del new_query['status__icontains']
+        return Card.objects.filter(**self.get_serach_params(query))
 
-        return Card.objects.filter(**new_query)
+    def get_serach_params(self, query):
+        param_list = [
+            {'param_name': 'BIN', 'rule': '{0}__icontains'},
+            {'param_name': 'issue_date', 'rule': '{0}__icontains'},
+            {'param_name': 'expired', 'rule': '{0}__icontains'},
+            {'param_name': 'number', 'rule': '{0}__icontains'},
+            {'param_name': 'status', 'rule': '{0}'},
+        ]
+        result = {}
+        for param in param_list:
+            value = query.get(param["param_name"])
+            if value:
+                result[param["rule"].format(param["param_name"])] = value
+        return result
 
     def get_initial(self):
         return self.request.GET.dict()
@@ -58,36 +66,47 @@ class CardDetail(DetailView):
         )
 
 
-class DeleteCardView(DeleteView):
+class DeleteCard(DeleteView):
     model = Card
 
     def delete(self, request, *args, **kwargs):
-        obj = self.get_object()
-        Transaction.objects.filter(card=obj).delete()
-        obj.delete()
+        self.get_object().delete()
         return JsonResponse({'url': reverse_lazy('card_list')})
 
 
-class ChangeStatusCardView(View):
+class ChangeStatusCard(View):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.card = None
 
     def post(self, request, *args, **kwargs):
-        card = get_object_or_404(Card, pk=self.kwargs['pk'])
-        if card.status == 'activated':
-            card.status = 'not_activated'
-        elif card.status == 'not_activated' or card.status == 'expired':
-            card.issue_date = datetime.datetime.now(tz=None)
-            card.expired = CG().add_months(6)
-            card.status = 'activated'
-        card.save()
+        self.card = get_object_or_404(Card, pk=self.kwargs['pk'])
+        self.update_card()
+        self.card.save()
         return JsonResponse({'url': reverse_lazy('card_detail', kwargs={'pk': self.kwargs['pk']})})
+
+    def update_card(self):
+        raise Exception('You must overwrite this method')
+
+
+class DeactivateCard(ChangeStatusCard):
+    def update_card(self):
+        self.card.status = 'not_activated'
+
+
+class ActivateCard(ChangeStatusCard):
+    def update_card(self):
+        self.card.status = 'activated'
+        self.card.issue_date = datetime.datetime.now(tz=None)
+        self.card.expired = add_months_to_now(6)
 
 
 class CardGenerator(FormMixin, ListView):
     model = CardGeneration
-    template_name = 'card_generator.html'      # noqa
+    template_name = 'card_generator.html'  # noqa
     form_class = GenerateCardForm
     success_url = reverse_lazy('card_generator')
-    paginate_by = 10
+    paginate_by = 20
 
     def get_queryset(self, *args, **kwargs):
         return CardGeneration.objects.all().order_by("-created_at", "-id")
@@ -96,11 +115,12 @@ class CardGenerator(FormMixin, ListView):
         form = self.get_form()
         if form.is_valid():
             card_generation = CardGeneration.objects.create(
-                quantity = form.cleaned_data['quantity'],
-                BIN = form.cleaned_data['BIN'],
-                activity_expiration_date = form.cleaned_data['activity_expiration_date'],
+                quantity=form.cleaned_data['quantity'],
+                BIN=form.cleaned_data['BIN'],
+                activity_expiration_date=form.cleaned_data['activity_expiration_date'],
             )
             generate_cards.delay({'id': card_generation.id})
             return self.form_valid(form)
         else:
+            self.object_list = self.get_queryset()
             return self.form_invalid(form)

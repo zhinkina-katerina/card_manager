@@ -1,9 +1,14 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 
+
 def check_for_invalid_characters(value):
-    if value.isdigit() == False:
+    if not value.isdigit():
         raise ValidationError('This field can only contain numbers')
+
+def check_for_negative_numbers_and_zero(value):
+    if value <= 0:
+        raise ValidationError('Please enter a value greater than zero')
 
 
 class Card(models.Model):
@@ -13,7 +18,8 @@ class Card(models.Model):
         ('expired', 'Expired'),
     )
 
-    BIN = models.CharField(max_length=6, validators=[check_for_invalid_characters])  # Bank Identification Number
+    BIN = models.CharField(max_length=6,
+                           validators=[check_for_invalid_characters])  # Bank Identification Number
     number = models.CharField(max_length=10, validators=[check_for_invalid_characters])
     issue_date = models.DateTimeField(default=None)
     expired = models.DateTimeField()
@@ -35,6 +41,7 @@ class Transaction(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date_created = models.DateTimeField(auto_now=True)
 
+
 class CardGeneration(models.Model):
     STRING_STATUS_CHOICES = (
         ('New', 'New'),
@@ -52,4 +59,7 @@ class CardGeneration(models.Model):
     quantity = models.IntegerField(default=0)
     exception = models.TextField(default="")
     BIN = models.CharField(max_length=6, validators=[check_for_invalid_characters])
-    activity_expiration_date = models.CharField(max_length=20, default='one_month', choices=ACTIVITY_EXPIRATION_DATE_CHOICES)
+    activity_expiration_date = models.CharField(
+        max_length=20, default='one_month',
+        choices=ACTIVITY_EXPIRATION_DATE_CHOICES
+    )

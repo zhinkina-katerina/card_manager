@@ -14,7 +14,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'search_for_expired_cards': {
         'task': 'card_manager.tasks.search_for_expired_cards',
-        'schedule': 5.0
+        'schedule': 50.0
     },
 
 }

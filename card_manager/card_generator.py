@@ -1,9 +1,9 @@
-import calendar
 import datetime
 import random
 import string
 
 from .models import Card
+from .utilits import add_months_to_now
 
 
 class CardGenerator:
@@ -15,7 +15,7 @@ class CardGenerator:
             for _ in range(item.quantity):
                 Card.objects.create(
                     BIN=item.BIN,
-                    number=self.random_string_digits(10),
+                    number=self.get_unique_card_number(item.BIN),
                     expired=self.get_expired_date(item.activity_expiration_date),
                     issue_date=datetime.datetime.now(tz=None),
                     cvv=self.random_string_digits(3),
@@ -23,10 +23,10 @@ class CardGenerator:
                     status='activated'
                 )
                 item.status = 'Completed'
-                item.save()
         except Exception as e:
             item.status = 'Failed'
             item.exception = str(e)
+        finally:
             item.save()
 
     def random_string_digits(self, length):
@@ -38,12 +38,19 @@ class CardGenerator:
             "six_months": 6,
             "one_month": 1,
         }[instance]
-        return self.add_months(interval)
+        return add_months_to_now(interval)
 
-    def add_months(self, months):
-        today = datetime.datetime.now(tz=None)
-        month = today.month - 1 + months
-        year = today.year + month // 12
-        month = month % 12 + 1
-        day = min(today.day, calendar.monthrange(year, month)[1])
-        return datetime.datetime(year, month, day, hour=today.hour, minute=today.minute, second=today.second)
+    def get_unique_card_number(self, BIN):
+        cards_whith_the_same_BIN = Card.objects.filter(BIN=BIN)
+        exists_numbers = [f.number for f in cards_whith_the_same_BIN]
+        card_number = self.random_string_digits(10)
+        if card_number not in exists_numbers:
+            return card_number
+        if cards_whith_the_same_BIN:
+            _ = 0
+            while True:
+                card_number = self.random_string_digits(10)
+                if card_number not in exists_numbers:
+                    return card_number
+                if _ == 10:
+                    raise Exception('Unable to create a valid number')

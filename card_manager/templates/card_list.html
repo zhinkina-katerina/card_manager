@@ -12,6 +12,7 @@
             <table class="table table-bordered">
                 <thead>
                 <tr>
+                    <th scope="col">BIN (series)</th>
                     <th scope="col">Number</th>
                     <th scope="col">Issue date</th>
                     <th scope="col">Expire date</th>
@@ -21,7 +22,8 @@
                 <tbody>
                     {% for object in object_list %}
                     <tr>
-                        <td><a href="{% url 'card_detail' pk=object.id %}">{{ object.BIN }}{{ object.number }}</a></td>
+                        <td><a href="{% url 'card_detail' pk=object.id %}">{{ object.BIN }}</a></td>
+                        <td><a href="{% url 'card_detail' pk=object.id %}">{{ object.number }}</a></td>
                         <td>{{ object.issue_date }}</td>
                         <td>{{ object.expired }}</td>
                         <td>{{ object.status }}</td>
