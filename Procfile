@@ -1,2 +1,2 @@
-web: gunicorn card_manager.wsgi --log-file -
+web: python manage.py runserver 0.0.0.0:$PORT
 worker: celery -A core beat & celery -A core worker -l INFO
