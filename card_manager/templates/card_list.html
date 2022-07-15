@@ -26,7 +26,7 @@
                         <td><a href="{% url 'card_detail' pk=object.id %}">{{ object.number }}</a></td>
                         <td>{{ object.issue_date }}</td>
                         <td>{{ object.expired }}</td>
-                        <td>{{ object.status }}</td>
+                        <td>{{ object.get_status_display }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
