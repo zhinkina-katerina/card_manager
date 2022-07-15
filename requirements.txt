@@ -33,5 +33,6 @@ typing_extensions==4.3.0
 tzdata==2022.1
 vine==5.0.0
 wcwidth==0.2.5
+whitenoise==6.2.0
 wrapt==1.14.1
 zipp==3.8.1
