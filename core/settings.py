@@ -32,11 +32,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_celery_beat',
     'card_manager',
-    # Pip packages
-    'bootstrap5',
-    'faker',
-    'celery',
-    'django_celery_results',
 ]
 
 MIDDLEWARE = [
