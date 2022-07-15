@@ -125,7 +125,10 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 BROKER_URL = os.getenv('REDIS_URL')
+CELERY_BROKER_URL = os.getenv('REDIS_URL')
 CELERY_RESULT_BACKEND = os.getenv('REDIS_URL')
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
 CELERY_TIMEZONE = 'Europe/Kiev'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
