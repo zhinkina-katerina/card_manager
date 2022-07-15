@@ -14,5 +14,5 @@ def search_for_expired_cards():
 
 
 @app.task(bind=True)
-def generate_cards(dict_id):
+def generate_cards(self, dict_id):
     CardGenerator().generate_cards(CardGeneration.objects.get(id=dict_id['id']))
