@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="row justify-content-between">
+        <div class="col">
+            <h2>Cards</h2>
+        </div>
+    </div>
+    <div class="row">
+            <div class="col-8">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">BIN (series)</th>
+                    <th scope="col">Number</th>
+                    <th scope="col">Issue date</th>
+                    <th scope="col">Expire date</th>
+                    <th scope="col">Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for object in object_list %}
+                    <tr>
+                        <td><a href="{% url 'card_detail' pk=object.id %}">{{ object.BIN }}</a></td>
+                        <td><a href="{% url 'card_detail' pk=object.id %}">{{ object.number }}</a></td>
+                        <td>{{ object.issue_date }}</td>
+                        <td>{{ object.expired }}</td>
+                        <td>{{ object.get_status_display }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        <div class="col-4">
+            <form action="{% url "card_search" %}" method='GET'>
+            {{form}}
+            <button type="submit" class="btn btn-primary mt-1" id="search">Apply filters</button>
+            </form>
+        </div>
+    <div class="col-8">
+    {% if page_obj.has_other_pages %}
+        {% include "base/paginator.html" with items=page_obj  %}
+    {% endif %}
+    </div>
+
+    </div>
+{% endblock %}

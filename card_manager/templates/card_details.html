@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+    {% csrf_token %}
+    {% with object.0 as card %}
+
+    <div class="row justify-content-between">
+        <div class="col">
+            <h2>Card details</h2>
+        </div>
+        {% include 'snippets/card_details_buttons.html' with card=object.0 %}
+    </div>
+    <div class="container">
+        {% include 'snippets/card.html' with card=object.0 %}
+        <h2 class="mt-3">Transactions</h2>
+        {% include 'snippets/transaction_table.html' with transactions=object %}
+    </div>
+
+    {% endwith %}
+    <script src="{% static 'js/cards_manager/delete_card.js' %}"></script>
+    <script src="{% static 'js/cards_manager/change_status_card.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,38 @@
+{%  extends 'base.html' %}
+{% block content %}
+
+    <form action="{% url "card_generator" %}" method='POST'>{% csrf_token %}
+        <div class="col-4">
+            {{ form }}
+         </div>
+        <button type="submit" class="btn btn-primary mt-3">Generate Cards</button>
+    </form>
+
+    <div class="col-12 mt-5">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th scope="col">BIN</th>
+                <th scope="col">Created at</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Activity expiration date</th>
+                <th scope="col">Status</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for object in object_list %}
+                <tr>
+                    <td>{{ object.BIN }}</td>
+                    <td>{{ object.created_at }}</td>
+                    <td>{{ object.quantity }}</td>
+                    <td>{{ object.get_activity_expiration_date_display }}</td>
+                    <td>{{ object.get_status_display }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if page_obj.has_other_pages %}
+        {% include "base/paginator.html" with items=page_obj  %}
+    {% endif %}
+{% endblock %}

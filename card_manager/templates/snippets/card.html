@@ -1,0 +1,53 @@
+{% load format_card_number %}
+<div class="row mt-3">
+    <div class="container-fluid d-flex justify-content-center">
+        <div class="col-sm-8 col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <span>CREDIT/DEBIT CARD</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body" style="height: 300px">
+                    <div class="col-12 mt-3 text-center p-2">
+                        <span class="d-block">{% format_card_number card.BIN card.number %}</span>
+                    </div>
+                    <hr class="col-xs-12">
+                <div class="row mt-3">
+                    <div class="col-6">
+                        <span class="d-block">Expiry</span>
+                        <span class="d-block">{{ card.expired }}</span>
+                    </div>
+                    <div class="col-6">
+                        <span class="d-block">CVV</span>
+                        <span class="d-block">{{ card.cvv }}</span>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-6">
+                        <span class="d-block">Issue date</span>
+                        <span class="d-block">{{ card.expired }}</span>
+                    </div>
+                    <div class="col-6">
+                        <span class="d-block">Balance</span>
+                        <span class="d-block">{{ card.balance }}</span>
+                    </div>
+                </div>
+                    {% if card.get_status_display == "Activated" %}
+                    <div class="col-12 text-center p-3 mt-2 bg-success text-white ">
+                    {% elif card.get_status_display == "Not activated"  %}
+                    <div class="col-12 text-center p-3 mt-2 bg-warning text-black ">
+                    {% elif card.get_status_display == "Expired"  %}
+                    <div class="col-12 text-center p-3 mt-2 bg-danger text-white ">
+                    {% else %}
+                    <div class="col-12 text-center p-3 mt-2 text-white ">
+                    {% endif %}
+                    <div class="">Status: {{ card.get_status_display|upper }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

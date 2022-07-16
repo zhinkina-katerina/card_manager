@@ -1,0 +1,38 @@
+[
+{
+    "model": "card_manager.cardgeneration",
+    "pk": 106,
+    "fields": {
+        "status": "Completed",
+        "created_at": "2022-07-15T20:11:00.083Z",
+        "quantity": 10,
+        "exception": "",
+        "BIN": "565485",
+        "activity_expiration_date": "one_year"
+    }
+},
+{
+    "model": "card_manager.cardgeneration",
+    "pk": 107,
+    "fields": {
+        "status": "Completed",
+        "created_at": "2022-07-16T10:27:29.456Z",
+        "quantity": 1,
+        "exception": "",
+        "BIN": "100010",
+        "activity_expiration_date": "six_months"
+    }
+},
+{
+    "model": "card_manager.cardgeneration",
+    "pk": 108,
+    "fields": {
+        "status": "Completed",
+        "created_at": "2022-07-16T10:27:36.114Z",
+        "quantity": 1,
+        "exception": "",
+        "BIN": "200003",
+        "activity_expiration_date": "one_month"
+    }
+}
+]
