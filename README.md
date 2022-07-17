@@ -11,7 +11,7 @@ Functionality of the program:
 - card generator with the following fields: series, number of generated cards, expiration date" with the values ​​"1 year", "6 months", "1 month".
 - after the expiration of the card's activity period, the status "expired" is assigned to the card
 
-You can check the project on Hiroku:
+You can check the project on Heroku:
 
 https://card-manager-test-task.herokuapp.com/
 
